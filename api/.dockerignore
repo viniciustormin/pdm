@@ -1,0 +1,39 @@
+# Tudo que não precisa entrar na imagem. Reduz o contexto de build e evita
+# vazar credencial ou artefato local para dentro do container.
+
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+.venv/
+venv/
+env/
+
+tests/
+scripts/
+docs/
+
+# O modelo stub é só de desenvolvimento: a imagem busca o modelo no GCS.
+data/modelo_stub/
+
+.git/
+.gitignore
+*.md
+!README.md
+
+.env
+*.json
+!data/*.json
+*.log
+
+.DS_Store
+.idea/
+.vscode/
+
+postman_collection.json
+teste_latencia.sh
+deploy.sh
+requirements-dev.txt

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+
+# Gerado por scripts/exportar_janelas.sh — não versionar (muda com a gold).
+# O .exemplo fica versionado para desenvolver sem acesso ao BigQuery.
+data/janelas_jogo.csv
+
+# Modelo de desenvolvimento, sintético.
+data/modelo_stub/

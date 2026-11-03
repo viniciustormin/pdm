@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+env/
+.env
+
+# credenciais — NUNCA versionar
+*-key.json
+service-account*.json
+credentials.json
+
+.DS_Store
+.idea/
+.vscode/
+*.log

@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "PDM T2 - API de predicao de prisao",
+    "description": "Colecao da demo. Defina a variavel base_url com a URL do Cloud Run (ou http://localhost:8080 para rodar local).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "description": "Trocar pela URL do Cloud Run antes da apresentacao"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/health", "host": ["{{base_url}}"], "path": ["health"] },
+        "description": "200 com o modelo carregado, 503 se o carregamento falhou no startup."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', () => pm.response.to.have.status(200));",
+              "pm.test('modelo carregado', () => pm.expect(pm.response.json().modelo_carregado).to.be.true);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Model info",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{base_url}}/model-info", "host": ["{{base_url}}"], "path": ["model-info"] },
+        "description": "Versao do modelo, contrato de features e cobertura do indice de janelas."
+      }
+    },
+    {
+      "name": "3. Predict - caso valido (dentro de janela de jogo)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tipo_crime\": \"NARCOTICS\",\n  \"local_ocorrencia\": \"STREET\",\n  \"distrito_policial\": 19,\n  \"data_hora_local_chicago\": \"2026-07-04T23:30:00\",\n  \"eh_domestico\": false,\n  \"unique_key\": \"demo-001\"\n}"
+        },
+        "url": { "raw": "{{base_url}}/predict", "host": ["{{base_url}}"], "path": ["predict"] },
+        "description": "Ocorrencia no distrito de Wrigley. A API resolve teve_jogo sozinha, consultando o indice carregado em memoria."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', () => pm.response.to.have.status(200));",
+              "const b = pm.response.json();",
+              "pm.test('probabilidade valida', () => { pm.expect(b.prob_prisao).to.be.at.least(0); pm.expect(b.prob_prisao).to.be.at.most(1); });",
+              "pm.test('teve_jogo resolvido pela API', () => pm.expect(b.teve_jogo_origem).to.eql('consultado'));",
+              "pm.test('latencia abaixo de 100ms', () => pm.expect(b.latencia_ms).to.be.below(100));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Predict - entrada invalida (espera 422)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tipo_crime\": \"THEFT\",\n  \"local_ocorrencia\": \"STREET\",\n  \"distrito_policial\": 99,\n  \"data_hora_local_chicago\": \"ontem a noite\",\n  \"eh_domestico\": false\n}"
+        },
+        "url": { "raw": "{{base_url}}/predict", "host": ["{{base_url}}"], "path": ["predict"] },
+        "description": "Distrito fora da faixa 1-31 e data nao parseavel. O Pydantic recusa antes de chegar no modelo."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 422', () => pm.response.to.have.status(422));",
+              "pm.test('aponta os dois campos', () => { const d = pm.response.json().detail.map(e => e.loc[1]); pm.expect(d).to.include('distrito_policial'); pm.expect(d).to.include('data_hora_local_chicago'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Predict batch",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ocorrencias\": [\n    {\n      \"tipo_crime\": \"NARCOTICS\",\n      \"local_ocorrencia\": \"STREET\",\n      \"distrito_policial\": 12,\n      \"data_hora_local_chicago\": \"2026-03-15T23:30:00\",\n      \"eh_domestico\": false,\n      \"unique_key\": \"lote-1\"\n    },\n    {\n      \"tipo_crime\": \"THEFT\",\n      \"local_ocorrencia\": \"APARTMENT\",\n      \"distrito_policial\": 9,\n      \"data_hora_local_chicago\": \"2026-03-15T14:00:00\",\n      \"eh_domestico\": true,\n      \"unique_key\": \"lote-2\"\n    },\n    {\n      \"tipo_crime\": \"BATTERY\",\n      \"local_ocorrencia\": \"BAR OR TAVERN\",\n      \"distrito_policial\": 19,\n      \"data_hora_local_chicago\": \"2026-07-04T23:45:00\",\n      \"eh_domestico\": false,\n      \"teve_jogo\": true,\n      \"unique_key\": \"lote-3\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/predict/batch",
+          "host": ["{{base_url}}"],
+          "path": ["predict", "batch"]
+        },
+        "description": "Tres ocorrencias de uma vez. A terceira informa teve_jogo explicitamente, que e o caminho usado pelo Dataflow no Trabalho Final."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', () => pm.response.to.have.status(200));",
+              "const b = pm.response.json();",
+              "pm.test('tres predicoes na ordem', () => pm.expect(b.predicoes.map(p => p.unique_key)).to.eql(['lote-1','lote-2','lote-3']));",
+              "pm.test('override respeitado', () => pm.expect(b.predicoes[2].teve_jogo_origem).to.eql('informado'));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

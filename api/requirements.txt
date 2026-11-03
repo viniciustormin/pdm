@@ -1,0 +1,21 @@
+# Versões FIXADAS. Duas razões, nenhuma delas cosmética:
+#
+# 1. scikit-learn/joblib: o model.joblib é um pickle. Carregar um pickle de
+#    sklearn numa versão diferente da que treinou pode falhar, ou — pior —
+#    carregar e prever errado em silêncio. A versão aqui tem que ser a MESMA
+#    do model/treinar.py e a mesma do container do Model Registry.
+#    Combinado com o responsável pelo modelo: 1.9.1
+#
+# 2. Build reprodutível: `pip install` sem pin resolve versões diferentes a
+#    cada build, então o container que você testou não é o que vai para o ar.
+
+fastapi==0.159.1
+uvicorn[standard]==0.54.0
+pydantic==2.13.5
+
+scikit-learn==1.9.1
+joblib==1.6.0
+numpy==2.5.3
+pandas==3.0.5
+
+google-cloud-storage==3.17.1

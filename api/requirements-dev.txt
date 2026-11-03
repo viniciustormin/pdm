@@ -1,0 +1,5 @@
+# Só para rodar os testes localmente. NÃO vai para a imagem.
+-r requirements.txt
+
+pytest==9.1.1
+httpx==0.28.1

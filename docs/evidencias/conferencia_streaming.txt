@@ -1,0 +1,27 @@
+Teste do streaming (21/10/2026) - replay de 01/10 a 12/10/2026 no Dataflow
+job crimes-streaming-20261021-1616 (1 worker n1-standard-1, us-central1), drenado ao final
+
+Gerador: 7.603 eventos reais lidos da API oficial, relogio acelerado 1440x (1 dia/min),
+~12 min de replay, 5% de eventos sujos de proposito (--sujo 0.05), 0 erros de publicacao.
+
+sql/12_conferencia_stream.sql
+12.1 Cobertura (ids distintos com data >= 01/10)
+  no_batch | no_stream | em_ambos | so_no_batch | so_no_stream
+     6952  |    7214   |   6611   |     341     |     603
+  - so_no_batch (341): eventos que o gerador "sujou" e o pipeline rejeitou -> foram para a dead-letter
+  - so_no_stream (603): 565 de 12/10 + 13 de 13/10 + ~25 espalhados = crimes que o portal publicou
+    HOJE, depois da carga batch da madrugada. O streaming viu antes; o batch incremental das 07:00
+    de amanha traz para a silver. E exatamente o papel de cada pipeline.
+
+12.2 Igualdade campo a campo (6.611 ocorrencias nos dois pipelines)
+  dif_data_hora 0 | dif_distrito 1 | dif_tipo 3 | dif_latitude 52
+  - latitude: 51 casos em que a silver esta sem coordenada e o evento ja tem (o portal geocodificou
+    depois da carga batch) e 1 diferenca real. data/hora identica em 100%.
+  - as regras de limpeza do Beam (Python) e da silver (SQL) produzem o mesmo resultado; as poucas
+    diferencas sao atualizacoes da propria fonte entre as duas leituras.
+
+12.3 Latencia publicacao (Pub/Sub) -> gravacao (BigQuery)
+  eventos 7425 | p50 158 ms | p95 3.593 ms  (p95 inclui o pico inicial com os workers subindo)
+
+12.4 Dead-letter por motivo (inclui 8 do teste local com DirectRunner)
+  distrito invalido 114 | date em formato invalido 108 | campos obrigatorios ausentes 98 | JSON invalido 96

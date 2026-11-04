@@ -1,0 +1,2 @@
+apache-beam[gcp]==2.*
+setuptools  # empacotar transforms.py para os workers (--setup_file)

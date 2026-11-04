@@ -1,0 +1,13 @@
+# As versões de scikit-learn, joblib, numpy e pandas têm que ser as mesmas de
+# api/requirements.txt. O teste test_versoes_iguais_as_da_api confere isso.
+scikit-learn==1.9.1
+joblib==1.6.0
+numpy==2.5.3
+pandas==3.0.5
+
+google-cloud-storage==3.17.1
+google-cloud-bigquery==3.47.0
+google-cloud-bigquery-storage==2.43.0
+google-cloud-aiplatform==2.7.0
+db-dtypes==1.9.0
+pyarrow==26.0.0

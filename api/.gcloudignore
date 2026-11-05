@@ -1,0 +1,17 @@
+# Sem este arquivo, o gcloud pode usar o .gitignore e deixar de enviar
+# data/janelas_jogo.csv, que o Dockerfile precisa copiar para a imagem.
+.gcloudignore
+.git
+.gitignore
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+*-key.json
+service-account*.json
+credentials.json
+
+data/modelo_stub/

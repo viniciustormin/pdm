@@ -10,6 +10,7 @@
 #   latencia_ms  (corpo da resposta)  -> só o tempo de inferência
 #   total        (curl)               -> inferência + rede + TLS
 set -euo pipefail
+export LC_ALL=C  # printf precisa de ponto decimal em sistemas em português
 
 URL="${1:-http://localhost:8080}"
 N="${N:-20}"

@@ -1,0 +1,17 @@
+Teste de latência contra o Cloud Run (04/11/2026), revisão api-prisao-00002-wc9, modelo v1
+Comando: bash api/teste_latencia.sh https://api-prisao-1007851295296.us-central1.run.app
+Cliente: computador de um integrante do grupo, com rede doméstica até us-central1
+
+Cold start nesta execução: 0.851079 s (excluído da medição)
+
+====================================================
+                  TOTAL (ms)   INFERÊNCIA (ms)
+----------------------------------------------------
+mínimo                277.21            13.526
+mediana               303.68            15.663
+máximo                361.02            23.231
+p95                   361.02            23.231
+====================================================
+n = 20 requisições (cold start excluído)
+
+Entrada inválida (distrito 99 e data "ontem"): HTTP 422

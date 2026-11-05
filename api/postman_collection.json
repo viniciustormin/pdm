@@ -7,7 +7,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:8080",
+      "value": "https://api-prisao-1007851295296.us-central1.run.app",
       "description": "Trocar pela URL do Cloud Run antes da apresentacao"
     }
   ],

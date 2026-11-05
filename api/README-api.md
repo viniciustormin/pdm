@@ -3,7 +3,7 @@
 Serviço de inferência em tempo real. Recebe uma ocorrência policial de Chicago
 e devolve a probabilidade de ela terminar em prisão.
 
-**URL:** `https://api-prisao-XXXX.us-central1.run.app` *(preencher após o deploy)*
+**URL:** `https://api-prisao-1007851295296.us-central1.run.app`
 
 ---
 
@@ -74,22 +74,21 @@ curl -X POST "$URL/predict" \
     "local_ocorrencia": "STREET",
     "distrito_policial": 19,
     "data_hora_local_chicago": "2026-07-04T19:00:00",
-    "eh_domestico": false,
-    "unique_key": "demo-001"
+    "eh_domestico": false
   }'
 ```
 
 ```json
 {
-  "prob_prisao": 0.662177,
+  "prob_prisao": 0.957003,
   "predicao": true,
   "limiar": 0.5,
-  "teve_jogo": true,
+  "teve_jogo": false,
   "teve_jogo_origem": "consultado",
-  "id_janela": "-1002",
-  "unique_key": "demo-001",
-  "versao_modelo": "v0",
-  "latencia_ms": 7.918
+  "id_janela": null,
+  "unique_key": null,
+  "versao_modelo": "v1",
+  "latencia_ms": 13.379
 }
 ```
 
@@ -189,7 +188,7 @@ para quase tudo, em silêncio.
 
 | Variável | Padrão | Função |
 |---|---|---|
-| `MODEL_URI` | `gs://crimes-chicago-pdm-2026/models/prisao/v0/model.joblib` | Modelo a carregar |
+| `MODEL_URI` | `gs://crimes-chicago-pdm-2026/models/prisao/v1/model.joblib` no `deploy.sh` | Modelo a carregar |
 | `JANELAS_CSV` | `data/janelas_jogo.csv` | Índice de janelas |
 | `JANELAS_OPCIONAL` | `false` na imagem | Se `true`, API sobe sem o CSV |
 | `CACHE_DIR` | `/tmp/modelo` | Cache do download do GCS |
@@ -231,26 +230,13 @@ loop.
 ./teste_latencia.sh "$URL"
 ```
 
-Medição local com o modelo stub, 20 requisições, cold start excluído:
+Medição contra o Cloud Run com o modelo v1, 20 requisições, cold start excluído:
 
 | | Total (ms) | Inferência (ms) |
 |---|---|---|
-| mínimo | 9,79 | 6,95 |
-| **mediana** | **11,24** | **7,92** |
-| máximo | 17,73 | 13,79 |
+| mínimo | 277,21 | 13,526 |
+| **mediana** | **303,68** | **15,663** |
+| máximo | 361,02 | 23,231 |
 
-Substituir por uma medição contra o Cloud Run antes da apresentação e salvar o
-print em `docs/evidencias/`.
-
----
-
-## Pendências de integração
-
-- [ ] `MODEL_URI` apontando para o v0 real (hoje aponta para o stub sintético)
-- [ ] Confirmar com o responsável pelo modelo que a versão do scikit-learn no
-      `requirements.txt` é a mesma do treino
-- [ ] Confirmar os nomes de coluna do `contrato_features.json`: a API monta
-      `tipo_crime`, `local_ocorrencia`, `distrito_policial`, `hora`,
-      `dia_semana`, `mes`, `eh_domestico`, `teve_jogo`
-- [ ] Rodar `scripts/exportar_janelas.sh` com a gold_janelas atual
-- [ ] Medir a latência contra o Cloud Run e atualizar a tabela acima
+O total inclui rede e TLS. Saída completa em
+[`docs/evidencias/latencia_cloudrun.txt`](../docs/evidencias/latencia_cloudrun.txt).

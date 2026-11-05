@@ -15,7 +15,7 @@ PROJETO="${PROJETO:-pdm-crimes-chicago}"
 REGIAO="${REGIAO:-us-central1}"
 SERVICO="${SERVICO:-api-prisao}"
 BUCKET="${BUCKET:-crimes-chicago-pdm-2026}"
-MODEL_URI="${MODEL_URI:-gs://${BUCKET}/models/prisao/v0/model.joblib}"
+MODEL_URI="${MODEL_URI:-gs://${BUCKET}/models/prisao/v1/model.joblib}"
 
 aquecer() {
   echo ">> min-instances=1 em ${SERVICO} (PASSA A COBRAR PARADO)"

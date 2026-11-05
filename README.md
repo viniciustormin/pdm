@@ -283,7 +283,7 @@ Detalhes completos em [`api/README-api.md`](api/README-api.md).
 
 ## Entregáveis
 
-- [ ] Apresentação em PDF
+- [x] Apresentação em PDF
 - [x] Código do producer Pub/Sub
 - [x] Código do pipeline de streaming
 - [x] Código da API REST com Dockerfile e scripts de deploy

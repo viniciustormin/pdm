@@ -1,0 +1,76 @@
+Evidência de testes automatizados - pytest (2026-11-04 UTC)
+Python 3.13.16 / pytest 9.2.0
+Repositório: viniciustormin/pdm @ c00304f
+
+=============== api/tests ===============
+============================= test session starts ==============================
+collecting ... collected 28 items
+
+tests/test_api.py::test_health_ok PASSED                                 [  3%]
+tests/test_api.py::test_model_info_traz_contrato PASSED                  [  7%]
+tests/test_api.py::test_predict_devolve_probabilidade_valida PASSED      [ 10%]
+tests/test_api.py::test_predict_header_de_latencia PASSED                [ 14%]
+tests/test_api.py::test_unique_key_volta_na_resposta PASSED              [ 17%]
+tests/test_api.py::test_teve_jogo_consultado_dentro_da_janela PASSED     [ 21%]
+tests/test_api.py::test_teve_jogo_false_fora_da_janela PASSED            [ 25%]
+tests/test_api.py::test_janela_sobreposta_resolve PASSED                 [ 28%]
+tests/test_api.py::test_janela_que_vira_o_dia PASSED                     [ 32%]
+tests/test_api.py::test_borda_fechada_no_inicio_aberta_no_fim PASSED     [ 35%]
+tests/test_api.py::test_override_tem_precedencia_sobre_consulta PASSED   [ 39%]
+tests/test_api.py::test_distrito_sem_estadio_nunca_tem_jogo PASSED       [ 42%]
+tests/test_api.py::test_dia_semana_segue_convencao_do_bigquery PASSED    [ 46%]
+tests/test_api.py::test_horario_com_offset_e_convertido_para_chicago PASSED [ 50%]
+tests/test_api.py::test_horario_sem_offset_e_tratado_como_chicago PASSED [ 53%]
+tests/test_api.py::test_entrada_invalida_devolve_422[mudanca0] PASSED    [ 57%]
+tests/test_api.py::test_entrada_invalida_devolve_422[mudanca1] PASSED    [ 60%]
+tests/test_api.py::test_entrada_invalida_devolve_422[mudanca2] PASSED    [ 64%]
+tests/test_api.py::test_entrada_invalida_devolve_422[mudanca3] PASSED    [ 67%]
+tests/test_api.py::test_entrada_invalida_devolve_422[mudanca4] PASSED    [ 71%]
+tests/test_api.py::test_entrada_invalida_devolve_422[mudanca5] PASSED    [ 75%]
+tests/test_api.py::test_campo_obrigatorio_ausente_devolve_422 PASSED     [ 78%]
+tests/test_api.py::test_campo_extra_e_ignorado PASSED                    [ 82%]
+tests/test_api.py::test_tipo_de_crime_desconhecido_nao_quebra PASSED     [ 85%]
+tests/test_api.py::test_batch_devolve_uma_predicao_por_item PASSED       [ 89%]
+tests/test_api.py::test_batch_vazio_devolve_422 PASSED                   [ 92%]
+tests/test_api.py::test_batch_preserva_ordem PASSED                      [ 96%]
+tests/test_api.py::test_batch_e_predict_concordam PASSED                 [100%]
+
+============================== 28 passed in 2.63s ==============================
+
+=============== model/tests ===============
+============================= test session starts ==============================
+collecting ... collected 15 items
+
+tests/test_modelo.py::test_versoes_iguais_as_da_api PASSED               [  6%]
+tests/test_modelo.py::test_features_iguais_as_que_a_api_monta PASSED     [ 13%]
+tests/test_modelo.py::test_campeao_usa_pr_auc_e_desempata_por_log_loss PASSED [ 20%]
+tests/test_modelo.py::test_baseline_e_taxa_por_tipo_com_fallback_global PASSED [ 26%]
+tests/test_modelo.py::test_rejeita_ano_fora_do_split PASSED              [ 33%]
+tests/test_modelo.py::test_rejeita_nulo PASSED                           [ 40%]
+tests/test_modelo.py::test_contrato_tem_o_formato_combinado PASSED       [ 46%]
+tests/test_modelo.py::test_v0_nao_le_teste PASSED                        [ 53%]
+tests/test_modelo.py::test_completo_escolhe_antes_de_ler_o_teste PASSED  [ 60%]
+tests/test_modelo.py::test_runs_do_experiments_sem_tensorboard PASSED    [ 66%]
+tests/test_modelo.py::test_categoria_nova_nao_quebra[construir_logreg] PASSED [ 73%]
+tests/test_modelo.py::test_categoria_nova_nao_quebra[construir_hgb] PASSED [ 80%]
+tests/test_modelo.py::test_joblib_abre_na_api_sem_o_codigo_do_modelo[logreg] PASSED [ 86%]
+tests/test_modelo.py::test_joblib_abre_na_api_sem_o_codigo_do_modelo[hgb] PASSED [ 93%]
+tests/test_modelo.py::test_registrar_sem_endpoint_e_com_alias PASSED     [100%]
+
+============================== 15 passed in 7.11s ==============================
+
+=============== streaming/tests ===============
+============================= test session starts ==============================
+collecting ... collected 8 items
+
+tests/test_transforms.py::test_evento_valido_e_tipado PASSED             [ 12%]
+tests/test_transforms.py::test_recupera_distrito_pelo_beat PASSED        [ 25%]
+tests/test_transforms.py::test_coordenada_fora_de_chicago_vira_nulo PASSED [ 37%]
+tests/test_transforms.py::test_eventos_invalidos[{quebrado-JSON invalido] PASSED [ 50%]
+tests/test_transforms.py::test_eventos_invalidos[payload1-distrito invalido] PASSED [ 62%]
+tests/test_transforms.py::test_eventos_invalidos[payload2-distrito invalido] PASSED [ 75%]
+tests/test_transforms.py::test_eventos_invalidos[payload3-date em formato invalido] PASSED [ 87%]
+tests/test_transforms.py::test_eventos_invalidos[payload4-campos obrigatorios] PASSED [100%]
+
+============================== 8 passed in 0.02s ===============================
+
